@@ -1,6 +1,6 @@
-#PREFIX=harbor.enncloud.cn/paas
-PREFIX=reg.enncloud.cn/paas
-TAG="v1.0.3"
+PREFIX=harbor.enncloud.cn/paas
+#PREFIX=reg.enncloud.cn/paas
+TAG="v1.0.6"
 IMAGE=${PREFIX}/kube-lb:${TAG}
 
 .PHONY: build image push

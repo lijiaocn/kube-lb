@@ -72,6 +72,7 @@ listen stats
 {{end}}{{end}}
 
 {{with .Backend}}{{range .}}backend {{.Name}}
+	mode {{ .Mode }}
 	balance {{.Algorithm}}{{range .Servers}}
 	server {{.Name}} {{.Addr}}:{{.Port}} {{.Option}}{{end}}
 {{end}}{{end}}

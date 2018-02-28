@@ -15,5 +15,6 @@ ADD ./503.http /etc/haproxy/errors/503.http
 ADD ./kube-lb /kube-lb
 
 ADD ./update.sh /update.sh
+ADD ./port_reused.sh  /port_reused.sh
 ADD ./run.sh /run.sh
 CMD ["/run.sh"]

@@ -1,4 +1,4 @@
-//create: 2018/01/04 11:09:11 change: 2018/01/26 19:54:49 lijiaocn@foxmail.com
+//create: 2018/01/04 11:09:11 Change: 2018/02/28 15:09:26 lijiaocn@foxmail.com
 package haproxy
 
 import (
@@ -79,10 +79,12 @@ func collect_common_info(key string, ls []*L.Listener) (certs []string, backends
 				continue
 			}
 			backend := &Backend{
+				Mode:      "tcp",
 				Name:      key + "-" + l.Name + "-" + sg.Name,
 				Algorithm: sg.Algorithm,
 			}
 			if len(sg.L7.Hosts) != 0 {
+				backend.Mode = "http"
 				backend.ACL = " hdr(host) -i "
 				backend.Hosts = sg.L7.Hosts
 				for _, host := range sg.L7.Hosts {

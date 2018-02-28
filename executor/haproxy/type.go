@@ -1,4 +1,4 @@
-//create: 2018/01/04 16:52:24 change: 2018/01/10 10:57:01 lijiaocn@foxmail.com
+//create: 2018/01/04 16:52:24 Change: 2018/02/28 15:11:39 lijiaocn@foxmail.com
 package haproxy
 
 type HaproxyConfig struct {
@@ -40,6 +40,7 @@ type FrontendSSL struct {
 }
 
 type Backend struct {
+	Mode      string
 	Name      string
 	ACL       string
 	Hosts     []string
