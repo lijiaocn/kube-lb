@@ -1,4 +1,4 @@
-//create: 2018/01/18 16:43:46 Change: 2018/02/08 14:40:23 lijiaocn@foxmail.com
+//create: 2018/01/18 16:43:46 Change: 2018/02/28 15:51:30 lijiaocn@foxmail.com
 package k8s_tenx
 
 import (
@@ -308,7 +308,8 @@ func parserListeners(svc *v1.Service) ([]L.Listener, error) {
 			l.L7Proto = L.PROTO_HTTPS
 		}
 		l.Name = svc.Namespace + "-" + name
-		if sgs, err := parseServerGroup(svc, infos[0]); err != nil {
+		isL7 := l.L7Proto == L.PROTO_HTTPS || l.L7Proto == L.PROTO_HTTP
+		if sgs, err := parseServerGroup(svc, infos[0], isL7); err != nil {
 			return newListeners, err
 		} else {
 			l.ServerGroups = append(l.ServerGroups, sgs...)
@@ -319,7 +320,7 @@ func parserListeners(svc *v1.Service) ([]L.Listener, error) {
 }
 
 //just support one server group now
-func parseServerGroup(svc *v1.Service, portName string) ([]*L.ServerGroup, error) {
+func parseServerGroup(svc *v1.Service, portName string, isl7 bool) ([]*L.ServerGroup, error) {
 	anno_domains := "binding_domains"
 	anno_sticky := "lb/sticky"
 	anno_algorithm := "lb/algorithm"
@@ -340,11 +341,13 @@ func parseServerGroup(svc *v1.Service, portName string) ([]*L.ServerGroup, error
 		Sticky:    sticky,
 		Algorithm: algorithm,
 	}
-	default_domain := svc.Name + "-" + svc.Namespace + "." + strings.TrimSpace(localConfig.group.Domain)
-	sg.L7.Hosts = append(make([]string, 0), default_domain)
-	if d, ok := svc.Annotations[anno_domains]; ok {
-		hosts := strings.Split(d, ",")
-		sg.L7.Hosts = append(sg.L7.Hosts, hosts...)
+	if isl7 {
+		default_domain := svc.Name + "-" + svc.Namespace + "." + strings.TrimSpace(localConfig.group.Domain)
+		sg.L7.Hosts = append(make([]string, 0), default_domain)
+		if d, ok := svc.Annotations[anno_domains]; ok {
+			hosts := strings.Split(d, ",")
+			sg.L7.Hosts = append(sg.L7.Hosts, hosts...)
+		}
 	}
 
 	for _, p := range svc.Spec.Ports {
